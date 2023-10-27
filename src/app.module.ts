@@ -5,7 +5,7 @@ import configuration from "config/configuration";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
-import { TypeOrmConfigService } from "./typeorm/TypeOrmConfig.service";
+import { TypeOrmConfigService } from "./typeorm/typeorm-config.service";
 
 @Module({
   imports: [

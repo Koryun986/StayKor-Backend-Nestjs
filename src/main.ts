@@ -10,8 +10,6 @@ async function bootstrap() {
     origin: configService.get<string>("frontendUrl"),
   });
   console.log("Server Start: " + configService.get<number>("port"));
-  console.log(configService.get("database.name"));
-
   await app.listen(configService.get<number>("port"));
 }
 bootstrap();
