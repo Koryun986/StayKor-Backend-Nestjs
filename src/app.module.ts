@@ -6,11 +6,12 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { TypeOrmConfigService } from "./typeorm/typeorm-config.service";
+import { JwtServiceModule } from "./jwt-service/jwt-service.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [".env", ".database.env"],
+      envFilePath: [".env", ".database.env", ".jwt.env"],
       load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
@@ -19,6 +20,7 @@ import { TypeOrmConfigService } from "./typeorm/typeorm-config.service";
       useClass: TypeOrmConfigService,
     }),
     AuthModule,
+    JwtServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
