@@ -1,14 +1,16 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "./",
-  "modulepaths": ["<rootdir>"],
+  "modulePaths": ["<rootdir>"],
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testRegex": ".spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleDirectories": ["<rootDir>/../", "node_modules"],
   "moduleNameMapper": {
-    "^src/(.*)$": "<rootDir>/src/$1"
+    "^src/(.*)$": "<rootDir>/src/$1",
+    "^config/(.*)$": "<rootDir>/config/$1",
+    "^test/(.*)$": "<rootDir>/test/$1"
   }
 }

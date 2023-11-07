@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
-import { User } from "src/typeorm/entities/user.entity";
+import { User } from "../../typeorm/entities/user.entity";
 import { Repository } from "typeorm";
-import { CreateUserDto } from "../dto/create-user.dto";
+import { CreateUserDto } from "src/auth/dto/create-user.dto";
 import { JwtTokenService } from "src/jwt-service/service/jwt/jwt.service";
 import { JwtTokens } from "src/jwt-service/types/jwt-token.type";
 
@@ -26,7 +26,7 @@ export class AuthService {
     };
   }
 
-  private async validateUserIfExist(userDto: CreateUserDto) {
+  async validateUserIfExist(userDto: CreateUserDto) {
     const userExist = await this.userRepository.findOneBy({
       email: userDto.email,
     });
