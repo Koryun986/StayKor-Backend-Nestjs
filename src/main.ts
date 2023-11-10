@@ -13,6 +13,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   console.log("Server Start: " + configService.get<number>("port"));
+  console.log(configService.get<string>("database.name"));
 
   await app.listen(configService.get<number>("port"));
 }
