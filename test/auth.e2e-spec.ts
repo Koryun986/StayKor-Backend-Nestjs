@@ -32,5 +32,14 @@ describe("AuthController (e2e)", () => {
     it("expect 201 when body is correct ", () => {
       return testRequest.expect(201);
     });
+
+    it("return correct response", () => {
+      return testRequest.then(({ body }) => {
+        expect(body.id.length).toBeGreaterThan(0);
+        expect(body.email).toBe(correctBody.email);
+        expect(body.name).toBe(correctBody.name);
+        expect(body.access_token.length).toBeGreaterThan(0);
+      });
+    });
   });
 });
