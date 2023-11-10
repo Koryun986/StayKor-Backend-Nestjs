@@ -29,7 +29,7 @@ describe("AuthController (e2e)", () => {
       testRequest = request(app.getHttpServer()).post(url).send(correctBody);
     });
 
-    it("expect 201 when body is correct ", async () => {
+    it("expect 201 when body is correct ", () => {
       return testRequest.expect(201);
     });
   });
