@@ -2,11 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AuthModule } from "src/auth/auth.module";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { TypeOrmConfigService } from "src/typeorm/typeorm-config.service";
 import { AppModule } from "src/app.module";
-TypeOrmConfigService;
 
 describe("AuthController (e2e)", () => {
   let app: INestApplication;
@@ -22,16 +18,19 @@ describe("AuthController (e2e)", () => {
 
   describe("/auth/registration (POST)", () => {
     const url = "/auth/registration";
+    const correctBody = {
+      name: "testUser",
+      email: "testUser@example.com",
+      password: "testPassword123",
+    };
+    let testRequest: request.Test | undefined;
+
+    beforeAll(async () => {
+      testRequest = request(app.getHttpServer()).post(url).send(correctBody);
+    });
 
     it("expect 201 when body is correct ", async () => {
-      return request(app.getHttpServer())
-        .post(url)
-        .send({
-          name: "testUser",
-          email: "testUser@example.com",
-          password: "testPassword123",
-        })
-        .expect(201);
+      return testRequest.expect(201);
     });
   });
 });
