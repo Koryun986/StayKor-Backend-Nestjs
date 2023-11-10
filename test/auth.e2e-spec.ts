@@ -3,6 +3,10 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AuthModule } from "src/auth/auth.module";
 import { AppModule } from "src/app.module";
+import { AuthResponse } from "src/auth/types/auth-response.type";
+import { COOKIE_REFRESH_TOKEN } from "src/auth/constants/cookie.constants";
+import { SimpleTypes } from "./constants/types.enum";
+import { resolve } from "path";
 
 describe("AuthController (e2e)", () => {
   let app: INestApplication;
@@ -34,11 +38,26 @@ describe("AuthController (e2e)", () => {
     });
 
     it("return correct response", () => {
-      return testRequest.then(({ body }) => {
-        expect(body.id.length).toBeGreaterThan(0);
+      return testRequest.then(({ body }: { body: AuthResponse }) => {
+        expect(body.id.toString().length).toBeGreaterThan(0);
         expect(body.email).toBe(correctBody.email);
         expect(body.name).toBe(correctBody.name);
         expect(body.access_token.length).toBeGreaterThan(0);
+      });
+    });
+
+    it("check cookies", () => {
+      return testRequest.then((response) => {
+        const cookiesString: string = response.headers["set-cookie"][0];
+        const cookiesObj = {};
+        cookiesString.split(";").forEach((item) => {
+          const cookiePairs = item.split("=");
+          cookiesObj[cookiePairs[0]] = cookiePairs[1];
+        });
+        const refreshToken = cookiesObj[COOKIE_REFRESH_TOKEN];
+        expect(refreshToken).toBeDefined();
+        expect(typeof refreshToken).toBe(SimpleTypes.string);
+        expect(refreshToken.toString().length).toBeGreaterThan(0);
       });
     });
   });
