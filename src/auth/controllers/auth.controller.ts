@@ -5,6 +5,7 @@ import { createUserSchema, CreateUserDto } from "../dto/create-user.dto";
 import { AuthResponse } from "../types/auth-response.type";
 import { Response, CookieOptions } from "express";
 import { ConfigService } from "@nestjs/config";
+import { COOKIE_REFRESH_TOKEN } from "../constants/cookie.constants";
 
 @Controller("auth")
 export class AuthController {
@@ -26,7 +27,7 @@ export class AuthController {
   ) {
     const user = await this.authService.registrateUser(userDto);
     resposne.cookie(
-      this.configService.get<string>("cookie.refreshToken"),
+      COOKIE_REFRESH_TOKEN,
       user.refreshToken.token,
       this.cookieConfig,
     );

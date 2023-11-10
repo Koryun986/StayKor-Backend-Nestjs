@@ -17,7 +17,4 @@ export default () => ({
     secret: process.env.JWT_SECRET_KEY,
     expiration: process.env.JWT_EXPIRATION,
   },
-  cookie: {
-    refreshToken: "refresh-token",
-  },
 });
