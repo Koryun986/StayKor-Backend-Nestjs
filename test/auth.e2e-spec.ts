@@ -37,13 +37,16 @@ describe("AuthController (e2e)", () => {
       return testRequest.expect(201);
     });
 
-    it("return correct response", () => {
-      return testRequest.then(({ body }: { body: AuthResponse }) => {
-        expect(body.id.toString().length).toBeGreaterThan(0);
-        expect(body.email).toBe(correctBody.email);
-        expect(body.name).toBe(correctBody.name);
-        expect(body.access_token.length).toBeGreaterThan(0);
-      });
+    it("should return correct response", () => {
+      return testRequest.then(
+        ({ body }: { body: AuthResponse & { password: string } }) => {
+          expect(body.id.toString().length).toBeGreaterThan(0);
+          expect(body.email).toBe(correctBody.email);
+          expect(body.name).toBe(correctBody.name);
+          expect(body.access_token.length).toBeGreaterThan(0);
+          expect(body.password).not.toBeDefined();
+        },
+      );
     });
 
     it("check cookies", () => {
