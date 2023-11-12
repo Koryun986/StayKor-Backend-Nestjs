@@ -60,5 +60,12 @@ describe("AuthController (e2e)", () => {
         expect(refreshToken.toString().length).toBeGreaterThan(0);
       });
     });
+
+    it("expect 400 status when user exists", () => {
+      return request(app.getHttpServer())
+        .post(url)
+        .send(correctBody)
+        .expect(400);
+    });
   });
 });
