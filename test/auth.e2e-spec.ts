@@ -7,6 +7,7 @@ import { AuthResponse } from "src/auth/types/auth-response.type";
 import { COOKIE_REFRESH_TOKEN } from "src/auth/constants/cookie.constants";
 import { SimpleTypes } from "./constants/types.enum";
 import { resolve } from "path";
+import { CreateUserDto } from "src/auth/dto/create-user.dto";
 
 describe("AuthController (e2e)", () => {
   let app: INestApplication;
@@ -22,11 +23,35 @@ describe("AuthController (e2e)", () => {
 
   describe("/auth/registration (POST)", () => {
     const url = "/auth/registration";
-    const correctBody = {
+    const correctBody: CreateUserDto = {
       name: "testUser",
       email: "testUser@example.com",
       password: "testPassword123",
     };
+    const wrongBodiesArr: Partial<CreateUserDto>[] = [
+      {
+        email: "testUser@example.com",
+        password: "testPassword123",
+      },
+      {
+        name: "testUser",
+        password: "testPassword123",
+      },
+      {
+        name: "testUser",
+        email: "testUser@example.com",
+      },
+      {
+        name: "testUser",
+        email: "not an email",
+        password: "testPassword123",
+      },
+      {
+        name: "testUser",
+        email: "testUser@example.com",
+        password: "te",
+      },
+    ];
     let testRequest: request.Test | undefined;
 
     beforeAll(async () => {
@@ -70,5 +95,12 @@ describe("AuthController (e2e)", () => {
         .send(correctBody)
         .expect(400);
     });
+
+    test.each(wrongBodiesArr)(
+      "expect 400 on { name: $name , email: $email , password: $password } ",
+      (...userDto) => {
+        return request(app.getHttpServer()).post(url).send(userDto).expect(400);
+      },
+    );
   });
 });
