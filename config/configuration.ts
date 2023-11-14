@@ -14,7 +14,10 @@ export default () => ({
         : process.env.DATABASE_NAME,
   },
   jwt: {
-    secret: process.env.JWT_SECRET_KEY,
+    secret:
+      process.env.NODE_ENV == "test"
+        ? "test secret"
+        : process.env.JWT_SECRET_KEY,
     expiration: process.env.JWT_EXPIRATION,
   },
 });
