@@ -13,6 +13,7 @@ describe("/auth/login (POST)", () => {
   const url = "/auth/login";
   const jwtService = new JwtService();
   const configService = new ConfigService();
+  let requestWithoutBody: request.Test | undefined;
   let testRequest: request.Test | undefined;
 
   beforeAll(async () => {
@@ -25,10 +26,14 @@ describe("/auth/login (POST)", () => {
     const accessToken = await jwtService.signAsync(correctBody, {
       secret: configService.get<string>("jwt.secret"),
     });
-    testRequest = request(app.getHttpServer())
+    requestWithoutBody = request(app.getHttpServer())
       .post(url)
-      .set({ Authorization: accessToken })
-      .send({ email: correctBody.email, password: correctBody.password });
+      .set({ Authorization: accessToken });
+
+    testRequest = requestWithoutBody.send({
+      email: correctBody.email,
+      password: correctBody.password,
+    });
   });
 
   it("expect 201 on correct body", () => {
@@ -52,5 +57,14 @@ describe("/auth/login (POST)", () => {
       .set({ Authorization: "wrong.access.token" })
       .send(correctBody)
       .expect(400);
+  });
+
+  it("expect unauthorized error on unauthorized user", async () => {
+    return requestWithoutBody
+      .send({
+        email: "unauthorized@user.com",
+        password: "wrongpassword",
+      })
+      .expect(401);
   });
 });
