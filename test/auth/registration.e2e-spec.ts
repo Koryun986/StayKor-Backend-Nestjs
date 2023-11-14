@@ -6,40 +6,11 @@ import { AppModule } from "src/app.module";
 import { AuthResponse } from "src/auth/types/auth-response.type";
 import { COOKIE_REFRESH_TOKEN } from "src/auth/constants/cookie.constants";
 import { SimpleTypes } from "../constants/types.enum";
-import { CreateUserDto } from "src/auth/dto/create-user.dto";
+import { correctBody, wrongBodiesArr } from "./utils";
 
 describe("/auth/registration (POST)", () => {
   let app: INestApplication;
   const url = "/auth/registration";
-  const correctBody: CreateUserDto = {
-    name: "testUser",
-    email: "testUser@example.com",
-    password: "testPassword123",
-  };
-  const wrongBodiesArr: Partial<CreateUserDto>[] = [
-    {
-      email: "testUser@example.com",
-      password: "testPassword123",
-    },
-    {
-      name: "testUser",
-      password: "testPassword123",
-    },
-    {
-      name: "testUser",
-      email: "testUser@example.com",
-    },
-    {
-      name: "testUser",
-      email: "not an email",
-      password: "testPassword123",
-    },
-    {
-      name: "testUser",
-      email: "testUser@example.com",
-      password: "te",
-    },
-  ];
   let testRequest: request.Test | undefined;
 
   beforeAll(async () => {
