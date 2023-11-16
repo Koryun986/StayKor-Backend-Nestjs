@@ -31,7 +31,7 @@ export class AuthService {
     };
   }
 
-  async loginUser(userDto: UserDto) {
+  async loginUser(userDto: UserDto): Promise<User & JwtTokens> {
     const user = await this.userRepository.findOneBy({
       email: userDto.email,
     });
