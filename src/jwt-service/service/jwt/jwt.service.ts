@@ -21,12 +21,7 @@ export class JwtTokenService {
   async generateToken(payload: User): Promise<JwtTokens> {
     console.log(payload);
 
-    const accessToken = await this.jwtService.signAsync(
-      { payload },
-      {
-        secret: this.configService.get("jwt.secret"),
-      },
-    );
+    const accessToken = await this.gnenerateAccessToken(payload);
     const refreshToken = await this.generateRefreshToken(payload);
     console.log({
       accessToken,
@@ -37,6 +32,15 @@ export class JwtTokenService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async gnenerateAccessToken(payload: User) {
+    return await this.jwtService.signAsync(
+      { payload },
+      {
+        secret: this.configService.get("jwt.secret"),
+      },
+    );
   }
 
   async validateRefreshToken(payload: User) {
