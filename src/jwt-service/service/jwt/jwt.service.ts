@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { add } from "date-fns";
+import { add, isPast } from "date-fns";
 import { JwtTokens } from "src/jwt-service/types/jwt-token.type";
 import { Token } from "src/typeorm/entities/token.entity";
 import { User } from "src/typeorm/entities/user.entity";
@@ -39,13 +39,27 @@ export class JwtTokenService {
     };
   }
 
+  async validateRefreshToken(payload: User) {
+    const token = await this.tokenRepository.findOneBy({
+      user: payload,
+    });
+    if (isPast(token.expiration)) {
+      token.expiration = this.createExpiration();
+    }
+    await this.tokenRepository.save(token);
+  }
+
   private async generateRefreshToken(payload: User) {
     const token = this.tokenRepository.create({
       token: v4(),
-      expiration: add(new Date(), { months: 1 }),
+      expiration: this.createExpiration(),
       user: payload,
     });
     await this.tokenRepository.save(token);
     return token;
+  }
+
+  private createExpiration() {
+    return add(new Date(), { months: 1 });
   }
 }
