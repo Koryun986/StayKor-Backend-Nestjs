@@ -40,7 +40,7 @@ export class JwtTokenService {
   }
 
   private async generateRefreshToken(payload: User) {
-    const token = await this.tokenRepository.create({
+    const token = this.tokenRepository.create({
       token: v4(),
       expiration: add(new Date(), { months: 1 }),
       user: payload,
