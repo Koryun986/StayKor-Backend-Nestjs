@@ -1,11 +1,8 @@
 import { z } from "zod";
+import { userSchema } from "./user.dto";
 
-export const createUserSchema = z
-  .object({
-    name: z.string().nonempty("Name is required"),
-    email: z.string().email("Please enter valid email address"),
-    password: z.string().min(5, "Password must be at least 5 characters"),
-  })
-  .required();
+export const createUserSchema = userSchema.extend({
+  name: z.string().nonempty("Name is required"),
+});
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;
