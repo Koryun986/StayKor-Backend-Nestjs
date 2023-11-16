@@ -47,6 +47,7 @@ export class JwtTokenService {
       token.expiration = this.createExpiration();
     }
     await this.tokenRepository.save(token);
+    return token;
   }
 
   private async generateRefreshToken(payload: User) {
