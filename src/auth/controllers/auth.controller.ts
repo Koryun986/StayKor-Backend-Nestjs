@@ -6,6 +6,7 @@ import { AuthResponse } from "../types/auth-response.type";
 import { Response, CookieOptions } from "express";
 import { ConfigService } from "@nestjs/config";
 import { COOKIE_REFRESH_TOKEN } from "../constants/cookie.constants";
+import { UserDto, userSchema } from "../dto/user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -41,5 +42,6 @@ export class AuthController {
   }
 
   @Post("login")
-  async loginUser(@Body() userDto: CreateUserDto) {}
+  @UsePipes(new ZodValidationPipe(userSchema))
+  async loginUser(@Body() userDto: UserDto) {}
 }
