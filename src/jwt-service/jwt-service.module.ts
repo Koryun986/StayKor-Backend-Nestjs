@@ -5,7 +5,6 @@ import { jwtConfig } from "./jwt-service.config";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Token } from "src/typeorm/entities/token.entity";
-import { JwtStrategy } from "./strategies/jwt.strategy";
 
 @Module({
   imports: [
@@ -17,6 +16,6 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
     TypeOrmModule.forFeature([Token]),
   ],
   exports: [JwtTokenService],
-  providers: [ConfigService, JwtStrategy, JwtTokenService],
+  providers: [ConfigService, JwtTokenService],
 })
 export class JwtServiceModule {}
