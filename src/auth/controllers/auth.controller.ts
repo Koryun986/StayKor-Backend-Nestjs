@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UsePipes, Res } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  UsePipes,
+  Res,
+  UseGuards,
+} from "@nestjs/common";
 import { ZodValidationPipe } from "src/pipes/zod-validation.pipe";
 import { AuthService } from "../services/auth.service";
 import { createUserSchema, CreateUserDto } from "../dto/create-user.dto";
@@ -7,6 +14,7 @@ import { Response, CookieOptions } from "express";
 import { ConfigService } from "@nestjs/config";
 import { COOKIE_REFRESH_TOKEN } from "../constants/cookie.constants";
 import { UserDto, userSchema } from "../dto/user.dto";
+import { AuthGuard } from "src/guards/auth/auth.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -41,6 +49,7 @@ export class AuthController {
     });
   }
 
+  @UseGuards(AuthGuard)
   @Post("login")
   @UsePipes(new ZodValidationPipe(userSchema))
   async loginUser(@Body() userDto: UserDto) {}

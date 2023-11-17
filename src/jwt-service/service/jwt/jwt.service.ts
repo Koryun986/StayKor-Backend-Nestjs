@@ -4,6 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { add, isPast } from "date-fns";
 import { JwtTokens } from "src/jwt-service/types/jwt-token.type";
+import { JwtVerificationResult } from "src/jwt-service/types/jwt-verication.type";
 import { Token } from "src/typeorm/entities/token.entity";
 import { User } from "src/typeorm/entities/user.entity";
 import { Repository } from "typeorm";
@@ -52,6 +53,16 @@ export class JwtTokenService {
     }
     await this.tokenRepository.save(token);
     return token;
+  }
+
+  async validateAccessToken(token: string): Promise<User> {
+    const data: JwtVerificationResult = await this.jwtService.verifyAsync(
+      token,
+      {
+        secret: this.configService.get("jwt.secret"),
+      },
+    );
+    return data.payload;
   }
 
   private async generateRefreshToken(payload: User) {
