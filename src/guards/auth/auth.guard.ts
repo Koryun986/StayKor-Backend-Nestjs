@@ -19,7 +19,8 @@ export class AuthGuard implements CanActivate {
       const accessToken = this.getAccessTokenFromRequest(request);
       const user: User =
         await this.jwtTokenService.validateAccessToken(accessToken);
-      return !!user;
+      const token = await this.jwtTokenService.getRefreshTokenFromUser(user);
+      return await this.jwtTokenService.isValideRefreshToken(token);
     } catch (e) {
       throw new ForbiddenException(e.message);
     }
