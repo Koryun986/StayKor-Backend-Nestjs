@@ -38,6 +38,10 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException("User not fount");
     }
+    await this.comparePasswordWithHashedPassword(
+      userDto.password,
+      user.password,
+    );
     const refreshToken = await this.jwtTokenServcie.validateRefreshToken(user);
     const accessToken = await this.jwtTokenServcie.gnenerateAccessToken(user);
 
@@ -70,5 +74,15 @@ export class AuthService {
 
   async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 3);
+  }
+
+  async comparePasswordWithHashedPassword(
+    comparedPassword: string,
+    hashedPassword: string,
+  ) {
+    const hashedComparedPassword = await this.hashPassword(comparedPassword);
+    bcrypt.compare(hashedComparedPassword, hashedPassword, (err) => {
+      if (err) throw new BadRequestException("Email or Password is incorrect");
+    });
   }
 }
