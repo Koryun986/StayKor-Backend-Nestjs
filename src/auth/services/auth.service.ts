@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   async createUser(userDto: CreateUserDto): Promise<User> {
-    const hashedPassword = await bcrypt.hash(userDto.password, 3);
+    const hashedPassword = await this.hashPassword(userDto.password);
     const user = this.userRepository.create({
       name: userDto.name,
       email: userDto.email,
@@ -66,5 +66,9 @@ export class AuthService {
     });
     await this.userRepository.save(user);
     return user;
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 3);
   }
 }
