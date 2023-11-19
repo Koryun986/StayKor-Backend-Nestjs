@@ -46,7 +46,7 @@ export class JwtTokenService {
 
   async validateRefreshToken(payload: User) {
     const token = await this.getRefreshTokenFromUser(payload);
-    if (isPast(token.expiration)) {
+    if (isPast(Date.parse(token.expiration.toString()))) {
       token.expiration = this.createExpiration();
     }
     await this.tokenRepository.save(token);
