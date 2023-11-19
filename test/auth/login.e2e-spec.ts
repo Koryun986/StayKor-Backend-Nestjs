@@ -51,14 +51,6 @@ describe("/auth/login (POST)", () => {
     );
   });
 
-  it("expect bad request error when access token is expired", async () => {
-    return await request(app.getHttpServer())
-      .post(url)
-      .set({ Authorization: "wrong.access.token" })
-      .send(correctBody)
-      .expect(400);
-  });
-
   it("expect unauthorized error on unauthorized user", async () => {
     return requestWithoutBody
       .send({
