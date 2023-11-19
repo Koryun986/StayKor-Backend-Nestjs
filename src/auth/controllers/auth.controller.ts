@@ -49,8 +49,21 @@ export class AuthController {
     });
   }
 
-  @UseGuards(AuthGuard)
   @Post("login")
   @UsePipes(new ZodValidationPipe(userSchema))
-  async loginUser(@Body() userDto: UserDto) {}
+  async loginUser(@Body() userDto: UserDto, @Res() resposne: Response) {
+    const user = await this.authService.loginUser(userDto);
+    resposne.cookie(
+      COOKIE_REFRESH_TOKEN,
+      user.refreshToken.token,
+      this.cookieConfig,
+    );
+
+    resposne.json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      access_token: user.accessToken,
+    });
+  }
 }
