@@ -4,6 +4,7 @@ import { AppModule } from "src/app.module";
 import { AuthModule } from "src/auth/auth.module";
 import * as request from "supertest";
 import { correctRefreshToken } from "./registration.spec";
+import { COOKIE_REFRESH_TOKEN } from "src/auth/constants/cookie.constants";
 
 export const refreshTest = describe("/auth/refresh (GET)", () => {
   const COOKIE = "Cookie";
@@ -23,5 +24,21 @@ export const refreshTest = describe("/auth/refresh (GET)", () => {
 
   it("should return 200 when all is correct", () => {
     return testRequest.set(COOKIE, correctRefreshToken).send().expect(200);
+  });
+
+  it("expect new refresh token when all is correct", () => {
+    return testRequest
+      .set(COOKIE, correctRefreshToken)
+      .send()
+      .then((response) => {
+        const cookiesString: string = response.headers["set-cookie"][0];
+        const cookiesObj = {};
+        cookiesString.split(";").forEach((item) => {
+          const cookiePairs = item.split("=");
+          cookiesObj[cookiePairs[0]] = cookiePairs[1];
+        });
+        const newRefreshToken = cookiesObj[COOKIE_REFRESH_TOKEN];
+        expect(newRefreshToken).not.toBe(correctRefreshToken);
+      });
   });
 });
