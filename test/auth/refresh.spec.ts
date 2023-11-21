@@ -41,4 +41,8 @@ export const refreshTest = describe("/auth/refresh (GET)", () => {
         expect(newRefreshToken).not.toBe(correctRefreshToken);
       });
   });
+
+  it("should return 400 when cookie is not defined", () => {
+    return testRequest.send().expect(400);
+  });
 });
