@@ -8,6 +8,8 @@ import { COOKIE_REFRESH_TOKEN } from "src/auth/constants/cookie.constants";
 import { SimpleTypes } from "../constants/types.enum";
 import { correctBody, wrongBodiesArr } from "./utils";
 
+//for using in /auth/refresh test
+let correctRefreshToken: undefined | string;
 export const registrationTest = () =>
   describe("/auth/registration (POST)", () => {
     let app: INestApplication;
@@ -49,6 +51,7 @@ export const registrationTest = () =>
           cookiesObj[cookiePairs[0]] = cookiePairs[1];
         });
         const refreshToken = cookiesObj[COOKIE_REFRESH_TOKEN];
+        correctRefreshToken = refreshToken;
         expect(refreshToken).toBeDefined();
         expect(typeof refreshToken).toBe(SimpleTypes.string);
         expect(refreshToken.toString().length).toBeGreaterThan(0);
