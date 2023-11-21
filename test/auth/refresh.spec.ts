@@ -3,6 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "src/app.module";
 import { AuthModule } from "src/auth/auth.module";
 import * as request from "supertest";
+import { correctRefreshToken } from "./registration.spec";
 
 export const refreshTest = describe("/auth/refresh (GET)", () => {
   const COOKIE = "Cookie";
@@ -18,5 +19,9 @@ export const refreshTest = describe("/auth/refresh (GET)", () => {
     app = moduleFixture.createNestApplication();
     await app.init();
     testRequest = request(app.getHttpServer()).get(url);
+  });
+
+  it("should return 200 when all is correct", () => {
+    return testRequest.set(COOKIE, correctRefreshToken).send().expect(200);
   });
 });
