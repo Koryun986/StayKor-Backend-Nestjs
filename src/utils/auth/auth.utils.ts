@@ -13,18 +13,11 @@ export class AuthUtils {
   }
 
   static getRefreshTokenFromRequest(request: Request): string {
-    const cookie = request.headers.cookie;
-    const cookiesArr = cookie.split("; ").map((str) => {
-      const cookiePair = str.trim().split("=");
-      return {
-        [cookiePair[0]]: cookiePair[1].trim(),
-      };
-    });
-    const refreshToken = cookiesArr.find(
-      (cookie) => !!cookie[COOKIE_REFRESH_TOKEN],
-    )[COOKIE_REFRESH_TOKEN];
-    if (refreshToken)
+    const cookies = request.cookies;
+    const refreshToken = cookies[COOKIE_REFRESH_TOKEN];
+    if (!refreshToken)
       throw new BadRequestException("Please login to your account");
+
     return refreshToken;
   }
 }
