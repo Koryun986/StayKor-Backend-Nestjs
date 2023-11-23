@@ -4,18 +4,17 @@ import {
   Post,
   UsePipes,
   Res,
-  UseGuards,
   Get,
+  Req,
 } from "@nestjs/common";
 import { ZodValidationPipe } from "src/pipes/zod-validation.pipe";
 import { AuthService } from "../services/auth.service";
 import { createUserSchema, CreateUserDto } from "../dto/create-user.dto";
-import { AuthResponse } from "../types/auth-response.type";
-import { Response, CookieOptions } from "express";
+import { Request, Response, CookieOptions } from "express";
 import { ConfigService } from "@nestjs/config";
 import { COOKIE_REFRESH_TOKEN } from "../constants/cookie.constants";
 import { UserDto, userSchema } from "../dto/user.dto";
-import { AuthGuard } from "src/guards/auth/auth.guard";
+import { AuthUtils } from "src/utils/auth/auth.utils";
 
 @Controller("auth")
 export class AuthController {
@@ -69,5 +68,7 @@ export class AuthController {
   }
 
   @Get("refresh")
-  async updateTokens(@Res() response: Response) {}
+  async updateTokens(@Req() request: Request) {
+    const refreshToken = AuthUtils.getRefreshTokenFromRequest(request);
+  }
 }
