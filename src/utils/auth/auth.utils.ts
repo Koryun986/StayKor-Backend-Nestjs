@@ -1,4 +1,4 @@
-import { UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, UnauthorizedException } from "@nestjs/common";
 import { Request } from "express";
 import { COOKIE_REFRESH_TOKEN } from "src/auth/constants/cookie.constants";
 
@@ -23,6 +23,8 @@ export class AuthUtils {
     const refreshToken = cookiesArr.find(
       (cookie) => !!cookie[COOKIE_REFRESH_TOKEN],
     )[COOKIE_REFRESH_TOKEN];
+    if (refreshToken)
+      throw new BadRequestException("Please login to your account");
     return refreshToken;
   }
 }

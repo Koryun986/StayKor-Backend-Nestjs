@@ -70,5 +70,6 @@ export class AuthController {
   @Get("refresh")
   async updateTokens(@Req() request: Request) {
     const refreshToken = AuthUtils.getRefreshTokenFromRequest(request);
+    return refreshToken;
   }
 }
