@@ -5,6 +5,7 @@ import {
   UsePipes,
   Res,
   UseGuards,
+  Get,
 } from "@nestjs/common";
 import { ZodValidationPipe } from "src/pipes/zod-validation.pipe";
 import { AuthService } from "../services/auth.service";
@@ -66,4 +67,7 @@ export class AuthController {
       access_token: user.accessToken,
     });
   }
+
+  @Get("refresh")
+  async updateTokens(@Res() response: Response) {}
 }
