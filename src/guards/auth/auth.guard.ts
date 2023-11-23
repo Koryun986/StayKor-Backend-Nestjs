@@ -8,6 +8,7 @@ import {
 import { Request } from "express";
 import { JwtTokenService } from "src/jwt-service/service/jwt/jwt.service";
 import { User } from "src/typeorm/entities/user.entity";
+import { AuthUtils } from "src/utils/auth/auth.utils";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,7 +17,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request: Request = context.switchToHttp().getRequest();
-      const accessToken = this.getAccessTokenFromRequest(request);
+      const accessToken = AuthUtils.getAccessTokenFromRequest(request);
       const user: User =
         await this.jwtTokenService.validateAccessToken(accessToken);
       const token = await this.jwtTokenService.getRefreshTokenFromUser(user);
@@ -24,14 +25,5 @@ export class AuthGuard implements CanActivate {
     } catch (e) {
       throw new ForbiddenException(e.message);
     }
-  }
-
-  getAccessTokenFromRequest(request: Request): string {
-    const { authorization } = request.headers;
-    if (!authorization || authorization.trim() === "") {
-      throw new UnauthorizedException("Please provide token");
-    }
-    const accessToken = authorization.replace(/bearer/gim, "").trim();
-    return accessToken;
   }
 }
