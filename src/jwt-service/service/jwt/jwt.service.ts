@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -71,6 +71,22 @@ export class JwtTokenService {
       },
     );
     return data.payload;
+  }
+
+  async isTokensBelongsToOneUser(
+    accessToken: string,
+    refreshToken: string,
+  ): Promise<User> {
+    const userFromAccessToken = await this.validateAccessToken(accessToken);
+    const userIdFromAccessToken = userFromAccessToken.id;
+    const tokenFromRefreshToken = await this.tokenRepository.findOneBy({
+      token: refreshToken,
+    });
+    const userIdFromRefreshToken = tokenFromRefreshToken.userId;
+    if (userIdFromAccessToken !== userIdFromRefreshToken)
+      throw new BadRequestException("Please login to your account");
+
+    return userFromAccessToken;
   }
 
   private async generateRefreshToken(payload: User) {
