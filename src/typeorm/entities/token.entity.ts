@@ -28,4 +28,9 @@ export class Token {
   @OneToOne(() => User)
   @JoinColumn()
   user: User;
+
+  @Column({
+    type: "bigint",
+  })
+  userId: number;
 }
