@@ -52,6 +52,25 @@ export class AuthService {
     };
   }
 
+  async updateTokens(accessToken: string, refreshToken: string) {
+    const user = await this.jwtTokenServcie.isTokensBelongsToOneUser(
+      accessToken,
+      refreshToken,
+    );
+    if (await this.isUsersRefreshTokenExpires(user))
+      throw new BadRequestException("Please login to your account");
+
+    const newAccessToken =
+      await this.jwtTokenServcie.gnenerateAccessToken(user);
+    return newAccessToken;
+  }
+
+  async isUsersRefreshTokenExpires(user: User) {
+    const token = await this.jwtTokenServcie.getRefreshTokenFromUser(user);
+    const isValid = await this.jwtTokenServcie.isValideRefreshToken(token);
+    return !isValid;
+  }
+
   async validateUserIfExist(userDto: CreateUserDto) {
     const userExist = await this.userRepository.findOneBy({
       email: userDto.email,

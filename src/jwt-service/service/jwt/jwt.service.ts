@@ -60,7 +60,7 @@ export class JwtTokenService {
   }
 
   async isValideRefreshToken(token: Token): Promise<boolean> {
-    return isFuture(token.expiration);
+    return isFuture(Date.parse(token.expiration.toString()));
   }
 
   async validateAccessToken(token: string): Promise<User> {
