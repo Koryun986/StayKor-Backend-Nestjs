@@ -14,6 +14,7 @@ export class AuthUtils {
 
   static getRefreshTokenFromRequest(request: Request): string {
     const cookies = request.cookies;
+
     const refreshToken = cookies[COOKIE_REFRESH_TOKEN];
     if (!refreshToken)
       throw new BadRequestException("Please login to your account");

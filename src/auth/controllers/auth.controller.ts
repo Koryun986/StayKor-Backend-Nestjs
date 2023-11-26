@@ -75,6 +75,8 @@ export class AuthController {
       accessToken,
       refreshToken,
     );
-    return newAccessToken;
+    return {
+      access_token: newAccessToken,
+    };
   }
 }
