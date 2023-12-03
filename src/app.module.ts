@@ -7,6 +7,7 @@ import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { TypeOrmConfigService } from "./typeorm/typeorm-config.service";
 import { JwtServiceModule } from "./jwt-service/jwt-service.module";
+import { LodgingsModule } from './lodgings/lodgings.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtServiceModule } from "./jwt-service/jwt-service.module";
     }),
     AuthModule,
     JwtServiceModule,
+    LodgingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
