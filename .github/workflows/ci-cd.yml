@@ -1,0 +1,26 @@
+name: StayKor-ci-cd
+run-name: ${{ github.actor }} runing tests
+on: 
+  push: 
+    branches: [main]
+  pull_request: 
+    branches: [main]
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+  strategy:
+    matrix:
+      node-version: [ 18.x ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install modules
+        run: npm Install
+      - name: Build project
+        run: npm run build
+      - name: Run unit tests
+        run: npm run test
+      - name: Run end to end tests
+        run: npm run test:e2e
