@@ -4,7 +4,10 @@ import { TestingModule, Test } from "@nestjs/testing";
 import * as request from "supertest";
 import * as streamToBlob from "stream-to-blob";
 import { correctAccessToken } from "test/auth/registration.spec";
-import { getFormDataFromFilePathAndObject } from "./utils";
+import {
+  getFormDataFromFilePathAndObject,
+  getFormDataFromObject,
+} from "./utils";
 
 describe("/lodgings/create (POST)", () => {
   let app: INestApplication;
@@ -41,5 +44,18 @@ describe("/lodgings/create (POST)", () => {
       .set("Authorization", `Bearer ${correctAccessToken}`)
       .send(formData)
       .expect(201);
+  });
+
+  it("expect unauthorized error when access token is invalid", () => {
+    const formData = getFormDataFromFilePathAndObject(
+      "./../../../assets/lodging_photo.jpg",
+      correctLodgingBody,
+    );
+    return testRequest.send(formData).expect(401);
+  });
+
+  it("expect badrequest error when images are not passed", () => {
+    const formData = getFormDataFromObject(correctLodgingBody);
+    return testRequest.send(formData).expect(400);
   });
 });
