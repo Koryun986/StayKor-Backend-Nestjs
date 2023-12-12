@@ -15,6 +15,11 @@ export class Lodging {
   })
   id: number;
 
+  @Column({
+    type: "longtext",
+  })
+  description: string;
+
   @OneToOne(() => Address)
   address: Address;
 
