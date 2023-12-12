@@ -1,6 +1,12 @@
-import { Controller, Post, UseInterceptors } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+} from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { LodgingsService } from "../service/lodgings.service";
+import { CreateLodgingDto } from "../dto/create-lodging.dto";
 
 @Controller("lodgings")
 export class LodgingsController {
@@ -8,5 +14,8 @@ export class LodgingsController {
 
   @Post("/create")
   @UseInterceptors(FilesInterceptor("files"))
-  async createLodging() {}
+  async createLodging(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() lodgingDto: CreateLodgingDto,
+  ) {}
 }
