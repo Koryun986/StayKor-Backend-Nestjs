@@ -9,6 +9,7 @@
 
 #Docker files
 docker-compose.yml
+Dockerfile
 
 # Logs
 logs
