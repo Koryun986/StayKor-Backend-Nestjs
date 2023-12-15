@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
 import { JwtTokenService } from "src/jwt-service/service/jwt/jwt.service";
@@ -20,8 +19,7 @@ export class AuthGuard implements CanActivate {
       const accessToken = AuthUtils.getAccessTokenFromRequest(request);
       const user: User =
         await this.jwtTokenService.validateAccessToken(accessToken);
-      const token = await this.jwtTokenService.getRefreshTokenFromUser(user);
-      return await this.jwtTokenService.isValideRefreshToken(token);
+      return !!user;
     } catch (e) {
       throw new ForbiddenException(e.message);
     }
