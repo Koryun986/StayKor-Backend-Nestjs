@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { initializeApp } from "firebase-admin";
 
 @Injectable()
-export class CloudStorageService {
+export class FirebaseCloudStorageService {
   private readonly _config = {
     apiKey: this.configService.get<string>("firebase.apiKey"),
     authDomain: this.configService.get<string>("firebase.authDomain"),
