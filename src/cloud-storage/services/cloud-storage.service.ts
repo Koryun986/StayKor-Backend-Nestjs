@@ -1,14 +1,28 @@
 import { Injectable } from "@nestjs/common";
-import { FirebaseCloudStorageService } from "src/firebase/firebase.service";
+import { ConfigService } from "@nestjs/config";
+import { initializeApp } from "firebase/app";
+import { FirebaseStorage, getStorage } from "firebase/storage";
 
 @Injectable()
 export class CloudStorageService {
-  private readonly app = this.firebaseCloudStorageService.app;
-  private readonly storage = this.app.storage().bucket();
+  private readonly storage: FirebaseStorage;
 
-  constructor(
-    private readonly firebaseCloudStorageService: FirebaseCloudStorageService,
-  ) {}
+  constructor(configService: ConfigService) {
+    const config = {
+      apiKey: configService.get<string>("firebase.apiKey"),
+      authDomain: configService.get<string>("firebase.authDomain"),
+      projectId: configService.get<string>("firebase.projectId"),
+      storageBucket: configService.get<string>("firebase.storageBucket"),
+      messagingSenderId: configService.get<string>(
+        "firebase.messagingSenderId",
+      ),
+      appId: configService.get<string>("firebase.appId"),
+      measurementId: configService.get<string>("firebase.measurementId"),
+    };
+
+    initializeApp(config);
+    this.storage = getStorage();
+  }
 
   async uploadFile(
     files: Array<Express.Multer.File>,
