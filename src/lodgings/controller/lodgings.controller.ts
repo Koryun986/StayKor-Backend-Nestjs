@@ -5,6 +5,7 @@ import {
   UploadedFiles,
   UseInterceptors,
   UseGuards,
+  Res,
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { LodgingsService } from "../service/lodgings.service";
@@ -21,5 +22,8 @@ export class LodgingsController {
   async createLodging(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() lodgingDto: CreateLodgingDto,
-  ) {}
+    @Res() resposne: Response,
+  ) {
+    
+  }
 }
