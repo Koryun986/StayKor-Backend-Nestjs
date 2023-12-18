@@ -19,7 +19,7 @@ export class LodgingsController {
 
   @Post("/create")
   @UseInterceptors(FilesInterceptor("files"))
-  @UserInterceptor(UserInterceptor)
+  @UseInterceptors(UserInterceptor)
   @UseGuards(AuthGuard)
   async createLodging(
     @UploadedFiles() files: Array<Express.Multer.File>,

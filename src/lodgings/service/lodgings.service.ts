@@ -16,13 +16,17 @@ export class LodgingsService {
   async createLodging(
     images: Array<Express.Multer.File>,
     lodgingDto: CreateLodgingDto,
+    userId: number,
   ) {
-    const lodging: Lodging = await this.saveLodging(lodgingDto);
+    const lodging: Lodging = await this.saveLodging(lodgingDto, userId);
   }
 
-  async saveLodging(lodgingDto: CreateLodgingDto): Promise<Lodging> {
+  async saveLodging(
+    lodgingDto: CreateLodgingDto,
+    userId: number,
+  ): Promise<Lodging> {
     const addressId = await this.createAddressAndGetId(lodgingDto.address);
-    const lodging = await this.lodgingRepository.create({
+    const lodging = this.lodgingRepository.create({
       description: lodgingDto.description,
       addressId,
       userId,
