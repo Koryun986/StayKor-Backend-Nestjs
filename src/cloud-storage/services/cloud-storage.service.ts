@@ -1,7 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { initializeApp } from "firebase/app";
-import { FirebaseStorage, getStorage } from "firebase/storage";
+import {
+  FirebaseStorage,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 @Injectable()
 export class CloudStorageService {
@@ -33,10 +38,9 @@ export class CloudStorageService {
       const folderName = `user_${userId}/lodging_${lodgingId}`;
       files.forEach(async ({ buffer, originalname, mimetype }) => {
         const filePath = `${folderName}/${Date.now()}_${originalname}`;
-        await this.storage.file(filePath).save(buffer, {
-          metadata: {
-            contentType: mimetype,
-          },
+        const storageRef = ref(this.storage, filePath);
+        await uploadBytesResumable(storageRef, buffer, {
+          contentType: mimetype,
         });
       });
     } catch (e) {
