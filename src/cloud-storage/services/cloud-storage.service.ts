@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { initializeApp } from "firebase/app";
 import {
   FirebaseStorage,
+  getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
@@ -33,16 +34,20 @@ export class CloudStorageService {
     files: Array<Express.Multer.File>,
     userId: number,
     lodgingId: number,
-  ) {
+  ): Promise<string[]> {
     try {
       const folderName = `user_${userId}/lodging_${lodgingId}`;
+      const downloadUrls: string[] = [];
       files.forEach(async ({ buffer, originalname, mimetype }) => {
         const filePath = `${folderName}/${Date.now()}_${originalname}`;
         const storageRef = ref(this.storage, filePath);
-        await uploadBytesResumable(storageRef, buffer, {
+        const snapshot = await uploadBytesResumable(storageRef, buffer, {
           contentType: mimetype,
         });
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+        downloadUrls.push(downloadUrl);
       });
+      return downloadUrls;
     } catch (e) {
       throw new Error("Can't upload files to Firebase Cloud Storage");
     }
