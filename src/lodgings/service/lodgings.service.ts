@@ -6,12 +6,15 @@ import { Lodging } from "src/typeorm/entities/lodging.entity";
 import { Repository } from "typeorm";
 import { AddressDto } from "../dto/address.dto";
 import { CreateLodgingDto } from "../dto/create-lodging.dto";
+import { LodgingImages } from "src/typeorm/entities/lodging-images.entity";
 
 @Injectable()
 export class LodgingsService {
   constructor(
     @InjectRepository(Lodging) private lodgingRepository: Repository<Lodging>,
     @InjectRepository(Address) private addressRepository: Repository<Address>,
+    @InjectRepository(LodgingImages)
+    private lodgingImagesRepository: Repository<LodgingImages>,
     private readonly cloudStorageService: CloudStorageService,
   ) {}
 
