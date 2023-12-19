@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { CloudStorageService } from "src/cloud-storage/services/cloud-storage.service";
 import { Address } from "src/typeorm/entities/address.entity";
 import { Lodging } from "src/typeorm/entities/lodging.entity";
 import { Repository } from "typeorm";
@@ -11,6 +12,7 @@ export class LodgingsService {
   constructor(
     @InjectRepository(Lodging) private lodgingRepository: Repository<Lodging>,
     @InjectRepository(Address) private addressRepository: Repository<Address>,
+    private readonly cloudStorageService: CloudStorageService,
   ) {}
 
   async createLodging(
