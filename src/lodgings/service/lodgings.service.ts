@@ -29,9 +29,13 @@ export class LodgingsService {
       userId,
       lodging.id,
     );
+    const lodgingImages = await this.storeDownloadUrls(
+      downloadUrls,
+      lodging.id,
+    );
     return {
       ...lodging,
-      downloadUrls,
+      downloadUrls: lodgingImages.downloadUrls,
     };
   }
 
@@ -58,5 +62,14 @@ export class LodgingsService {
     });
     await this.addressRepository.save(address);
     return address.id;
+  }
+
+  async storeDownloadUrls(urls: string[], lodgingId: number) {
+    const lodgingImages = this.lodgingImagesRepository.create({
+      lodgingId,
+      downloadUrls: urls,
+    });
+    await this.lodgingImagesRepository.save(lodgingImages);
+    return lodgingImages;
   }
 }
