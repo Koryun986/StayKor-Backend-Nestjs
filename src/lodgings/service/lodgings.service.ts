@@ -23,20 +23,24 @@ export class LodgingsService {
     lodgingDto: CreateLodgingDto,
     userId: number,
   ) {
-    const lodging: Lodging = await this.saveLodging(lodgingDto, userId);
-    const downloadUrls = await this.cloudStorageService.uploadFile(
-      images,
-      userId,
-      lodging.id,
-    );
-    const lodgingImages = await this.storeDownloadUrls(
-      downloadUrls,
-      lodging.id,
-    );
-    return {
-      ...lodging,
-      downloadUrls: lodgingImages.downloadUrls,
-    };
+    try {
+      const lodging: Lodging = await this.saveLodging(lodgingDto, userId);
+      const downloadUrls = await this.cloudStorageService.uploadFile(
+        images,
+        userId,
+        lodging.id,
+      );
+      const lodgingImages = await this.storeDownloadUrls(
+        downloadUrls,
+        lodging.id,
+      );
+      return {
+        ...lodging,
+        downloadUrls: lodgingImages.downloadUrls,
+      };
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
   async saveLodging(
