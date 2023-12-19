@@ -15,6 +15,9 @@ export class Lodging {
   })
   id: number;
 
+  @Column()
+  price: string;
+
   @Column({
     type: "longtext",
   })
@@ -29,7 +32,7 @@ export class Lodging {
   addressId: number;
 
   @ManyToOne(() => User)
-  owner: User;
+  user: User;
 
   @Column({
     type: "bigint",
