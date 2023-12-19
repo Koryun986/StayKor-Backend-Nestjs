@@ -8,6 +8,7 @@ import { COOKIE_REFRESH_TOKEN } from "src/auth/constants/cookie.constants";
 import { SimpleTypes } from "../constants/types.enum";
 import { correctBody, wrongBodiesArr } from "./utils";
 
+let correctAccessToken: string | undefined;
 export const registrationTest = () =>
   describe("/auth/registration (POST)", () => {
     let app: INestApplication;
@@ -36,6 +37,7 @@ export const registrationTest = () =>
           expect(body.name).toBe(correctBody.name);
           expect(body.access_token.length).toBeGreaterThan(0);
           expect(body.password).not.toBeDefined();
+          correctAccessToken = body.access_token;
         },
       );
     });
@@ -69,3 +71,5 @@ export const registrationTest = () =>
       },
     );
   });
+
+export { correctAccessToken };
