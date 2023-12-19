@@ -50,6 +50,7 @@ export class LodgingsService {
     const addressId = await this.createAddressAndGetId(lodgingDto.address);
     const lodging = this.lodgingRepository.create({
       description: lodgingDto.description,
+      price: lodgingDto.price,
       addressId,
       userId,
     });
