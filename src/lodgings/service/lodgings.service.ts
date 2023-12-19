@@ -21,6 +21,15 @@ export class LodgingsService {
     userId: number,
   ) {
     const lodging: Lodging = await this.saveLodging(lodgingDto, userId);
+    const downloadUrls = await this.cloudStorageService.uploadFile(
+      images,
+      userId,
+      lodging.id,
+    );
+    return {
+      ...lodging,
+      downloadUrls,
+    };
   }
 
   async saveLodging(
