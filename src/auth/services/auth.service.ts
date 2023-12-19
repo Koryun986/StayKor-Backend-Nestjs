@@ -36,7 +36,7 @@ export class AuthService {
       email: userDto.email,
     });
     if (!user) {
-      throw new UnauthorizedException("User not fount");
+      throw new UnauthorizedException("User not found");
     }
     await this.comparePasswordWithHashedPassword(
       userDto.password,
