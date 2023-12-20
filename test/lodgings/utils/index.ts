@@ -1,5 +1,5 @@
 import { createReadStream } from "fs";
-import mime from "mime";
+// import mime from "mime";
 
 function getBlobFromFilePath(filePath: string) {
   const readStream = createReadStream(filePath);
@@ -11,8 +11,9 @@ function getBlobFromFilePath(filePath: string) {
   let blob: Blob;
   readStream.on("end", () => {
     const buffer = Buffer.concat(bufferChunks);
-    const mimeType = mime.getType(filePath);
-    blob = new Blob([buffer], { type: mimeType });
+
+    // const mimeType = mime.getType(filePath);
+    blob = new Blob([buffer], { type: "image/jpg" });
   });
   return blob;
 }

@@ -36,7 +36,7 @@ export const createLodgingTest = () =>
 
     it("expect 201 status when everything is correct", () => {
       const formData = getFormDataFromFilePathAndObject(
-        "./../../../assets/lodging_photo.jpg",
+        "/assets/lodging_photo.jpg",
         correctLodgingBody,
       );
       return testRequest
