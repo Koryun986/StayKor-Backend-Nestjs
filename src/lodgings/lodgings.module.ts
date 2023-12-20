@@ -17,14 +17,6 @@ import { LodgingsService } from "./service/lodgings.service";
     TypeOrmModule.forFeature([Lodging, Address, LodgingImages]),
   ],
   controllers: [LodgingsController],
-  providers: [
-    LodgingsService,
-    CloudStorageService,
-    ConfigService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: UserInterceptor,
-    },
-  ],
+  providers: [LodgingsService, CloudStorageService, ConfigService],
 })
 export class LodgingsModule {}
