@@ -1,15 +1,27 @@
 import { createReadStream } from "fs";
-import * as streamToBlob from "stream-to-blob";
+// import mime from "mime";
+
+function getBlobFromFilePath(filePath: string) {
+  const readStream = createReadStream(filePath);
+  const bufferChunks = [];
+  readStream.on("data", (chunk) => {
+    bufferChunks.push(chunk);
+  });
+
+  let blob: Blob;
+  readStream.on("end", () => {
+    const buffer = Buffer.concat(bufferChunks);
+
+    // const mimeType = mime.getType(filePath);
+    blob = new Blob([buffer], { type: "image/jpg" });
+  });
+  return blob;
+}
 
 export function getFormDataFromFilePathAndObject(filePath: string, obj: any) {
   const formData = getFormDataFromObject(obj);
-  const readStream = createReadStream("./../../../assets/lodging_photo.jpg");
-  streamToBlob(readStream, (err: Error, blob: Blob) => {
-    if (err)
-      return new Error("Something went wrong while converting stream to blob");
-
-    formData.append("file[]", blob);
-  });
+  const blob = getBlobFromFilePath(filePath);
+  formData.append("file[]", blob);
   return formData;
 }
 
