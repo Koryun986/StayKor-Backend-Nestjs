@@ -12,15 +12,15 @@ import { AuthUtils } from "src/utils/auth/auth.utils";
 export class UserInterceptor implements NestInterceptor {
   constructor(private readonly jwtTokenService: JwtTokenService) {}
 
-  intercept(
+  async intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
-  ): Observable<any> | Promise<Observable<any>> {
+  ): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
     const accessToken = AuthUtils.getAccessTokenFromRequest(request);
 
     if (accessToken) {
-      const user = this.jwtTokenService.validateAccessToken(accessToken);
+      const user = await this.jwtTokenService.validateAccessToken(accessToken);
       request.user = user;
     }
 

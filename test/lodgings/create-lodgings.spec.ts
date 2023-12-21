@@ -39,6 +39,7 @@ export const createLodgingTest = () =>
         "/assets/lodging_photo.jpg",
         correctLodgingBody,
       );
+
       return testRequest
         .set("Authorization", `Bearer ${correctAccessToken}`)
         .send(formData)
