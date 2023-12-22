@@ -7,13 +7,13 @@ import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { TypeOrmConfigService } from "./typeorm/typeorm-config.service";
 import { JwtServiceModule } from "./jwt-service/jwt-service.module";
-import { LodgingsModule } from './lodgings/lodgings.module';
-import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
+import { LodgingsModule } from "./lodgings/lodgings.module";
+import { CloudStorageModule } from "./cloud-storage/cloud-storage.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [".env", ".database.env", ".jwt.env"],
+      envFilePath: [".env", ".database.env", ".jwt.env", ".firebase.env"],
       load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
