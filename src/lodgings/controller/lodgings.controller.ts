@@ -24,10 +24,9 @@ export class LodgingsController {
   constructor(private lodgingsService: LodgingsService) {}
 
   @Post("/create")
+  @UsePipes(new ZodValidationPipe(createLodgingSchema))
   @UseInterceptors(FilesInterceptor("files"))
   @UseInterceptors(UserInterceptor)
-  @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(createLodgingSchema))
   async createLodging(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() lodgingDto: CreateLodgingDto,
