@@ -4,12 +4,10 @@ import {
   Post,
   Req,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
   UsePipes,
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { AuthGuard } from "src/guards/auth/auth.guard";
 import { UserInterceptor } from "src/interceptors/auth/user.interceptor";
 import { ZodValidationPipe } from "src/pipes/zod-validation.pipe";
 import { User } from "src/typeorm/entities/user.entity";

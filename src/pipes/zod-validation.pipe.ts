@@ -11,6 +11,7 @@ export class ZodValidationPipe implements PipeTransform {
   transform(value: unknown, metadata: ArgumentMetadata) {
     try {
       this.schema.parse(value);
+      return value;
     } catch (error) {
       if (error instanceof ZodError) {
         throw new BadRequestException({
@@ -20,6 +21,5 @@ export class ZodValidationPipe implements PipeTransform {
       }
       throw new BadRequestException("Validation failed");
     }
-    return value;
   }
 }
