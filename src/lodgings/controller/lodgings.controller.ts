@@ -22,12 +22,12 @@ export class LodgingsController {
   constructor(private lodgingsService: LodgingsService) {}
 
   @Post("/create")
-  @UsePipes(new ZodValidationPipe(createLodgingSchema))
   @UseInterceptors(FilesInterceptor("files"))
   @UseInterceptors(UserInterceptor)
   async createLodging(
     @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() lodgingDto: CreateLodgingDto,
+    @Body(new ZodValidationPipe(createLodgingSchema))
+    lodgingDto: CreateLodgingDto,
     @Req() request: Request,
   ) {
     const user: User = (request as any).user;
