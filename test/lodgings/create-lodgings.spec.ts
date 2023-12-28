@@ -34,9 +34,9 @@ export const createLodgingTest = () =>
       testRequest = request(app.getHttpServer()).post(url);
     });
 
-    it("expect 201 status when everything is correct", () => {
-      const formData = getFormDataFromFilePathAndObject(
-        "/assets/lodging_photo.jpg",
+    it("expect 201 status when everything is correct", async () => {
+      const formData = await getFormDataFromFilePathAndObject(
+        "https://via.placeholder.com/600/92c952",
         correctLodgingBody,
       );
 
@@ -48,7 +48,7 @@ export const createLodgingTest = () =>
 
     it("expect unauthorized error when access token is invalid", () => {
       const formData = getFormDataFromFilePathAndObject(
-        "./../../../assets/lodging_photo.jpg",
+        "https://via.placeholder.com/600/92c952",
         correctLodgingBody,
       );
       return testRequest.send(formData).expect(401);

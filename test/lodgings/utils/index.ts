@@ -1,36 +1,30 @@
-import { createReadStream } from "fs";
-// import mime from "mime";
+async function getBlobFromFilePath(filePath: string) {
+  try {
+    const response = await fetch(filePath);
+    const blob = await response.blob();
 
-function getBlobFromFilePath(filePath: string) {
-  const readStream = createReadStream(filePath);
-  const bufferChunks = [];
-  readStream.on("data", (chunk) => {
-    bufferChunks.push(chunk);
-  });
-
-  let blob: Blob;
-  readStream.on("end", () => {
-    const buffer = Buffer.concat(bufferChunks);
-
-    // const mimeType = mime.getType(filePath);
-    blob = new Blob([buffer], { type: "image/jpg" });
-  });
-  return blob;
+    return blob;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export function getFormDataFromFilePathAndObject(filePath: string, obj: any) {
+export async function getFormDataFromFilePathAndObject(
+  filePath: string,
+  obj: any,
+) {
   const formData = getFormDataFromObject(obj);
-  const blob = getBlobFromFilePath(filePath);
-  formData.append("file[]", blob);
+  const blob = await getBlobFromFilePath(filePath);
+  formData.append("files", blob);
   return formData;
 }
 
 export function getFormDataFromObject(obj: any) {
   const formData = new FormData();
   formData.append("price", obj?.price);
-  formData.append("address.country", obj?.address?.country);
-  formData.append("address.city", obj?.address?.city);
-  formData.append("address.address", obj?.address?.address);
+  formData.append("address[country]", obj?.address?.country);
+  formData.append("address[city]", obj?.address?.city);
+  formData.append("address[address]", obj?.address?.address);
   formData.append("description", obj?.description);
   return formData;
 }
