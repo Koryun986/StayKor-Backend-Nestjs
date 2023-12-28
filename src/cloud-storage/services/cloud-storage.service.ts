@@ -13,7 +13,7 @@ import {
 export class CloudStorageService {
   private readonly storage: FirebaseStorage;
 
-  constructor(configService: ConfigService) {
+  constructor(private configService: ConfigService) {
     const config = {
       apiKey: configService.get<string>("firebase.apiKey"),
       authDomain: configService.get<string>("firebase.authDomain"),
@@ -36,7 +36,10 @@ export class CloudStorageService {
     lodgingId: number,
   ): Promise<string[]> {
     try {
-      const folderName = `user_${userId}/lodging_${lodgingId}`;
+      const coreFolderName = this.configService.get<string>(
+        "firebase.storageLodgingFolder",
+      );
+      const folderName = `${coreFolderName}/user_${userId}/lodging_${lodgingId}`;
       const downloadUrls: string[] = [];
       files.forEach(async ({ buffer, originalname, mimetype }) => {
         const filePath = `${folderName}/${Date.now()}_${originalname}`;
