@@ -41,15 +41,21 @@ export class CloudStorageService {
       );
       const folderName = `${coreFolderName}/user_${userId}/lodging_${lodgingId}`;
       const downloadUrls: string[] = [];
-      files.forEach(async ({ buffer, originalname, mimetype }) => {
-        const filePath = `${folderName}/${Date.now()}_${originalname}`;
-        const storageRef = ref(this.storage, filePath);
-        const snapshot = await uploadBytesResumable(storageRef, buffer, {
-          contentType: mimetype,
-        });
-        const downloadUrl = await getDownloadURL(snapshot.ref);
-        downloadUrls.push(downloadUrl);
-      });
+
+      await Promise.all(
+        files.map(async ({ buffer, originalname, mimetype }) => {
+          const filePath = `${folderName}/${Date.now()}_${originalname}`;
+          const storageRef = ref(this.storage, filePath);
+          const snapshot = await uploadBytesResumable(storageRef, buffer, {
+            contentType: mimetype,
+          });
+
+          const downloadUrl = await getDownloadURL(snapshot.ref);
+
+          downloadUrls.push(downloadUrl);
+        }),
+      );
+
       return downloadUrls;
     } catch (e) {
       throw new Error("Can't upload files to Firebase Cloud Storage");

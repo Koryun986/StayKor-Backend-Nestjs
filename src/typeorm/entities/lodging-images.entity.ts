@@ -16,6 +16,8 @@ export class LodgingImages {
   })
   lodgingId: number;
 
-  @Column("simple-array")
-  downloadUrls: string[];
+  @Column({
+    type: "longtext",
+  })
+  downloadUrls: string;
 }

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CloudStorageService } from "src/cloud-storage/services/cloud-storage.service";
+import { LodgingImagesRepository } from "src/repositories/lodging/lodging-images.repository";
 import { Address } from "src/typeorm/entities/address.entity";
 import { Lodging } from "src/typeorm/entities/lodging.entity";
 import { Repository } from "typeorm";
@@ -14,7 +15,7 @@ export class LodgingsService {
     @InjectRepository(Lodging) private lodgingRepository: Repository<Lodging>,
     @InjectRepository(Address) private addressRepository: Repository<Address>,
     @InjectRepository(LodgingImages)
-    private lodgingImagesRepository: Repository<LodgingImages>,
+    private lodgingImagesRepository: LodgingImagesRepository,
     private readonly cloudStorageService: CloudStorageService,
   ) {}
 
@@ -30,13 +31,10 @@ export class LodgingsService {
         userId,
         lodging.id,
       );
-      const lodgingImages = await this.storeDownloadUrls(
-        downloadUrls,
-        lodging.id,
-      );
+      await this.storeDownloadUrls(downloadUrls, lodging.id);
       return {
         ...lodging,
-        downloadUrls: lodgingImages.downloadUrls,
+        downloadUrls: downloadUrls,
       };
     } catch (e) {
       throw new Error(e);
@@ -70,10 +68,11 @@ export class LodgingsService {
   }
 
   async storeDownloadUrls(urls: string[], lodgingId: number) {
-    const lodgingImages = this.lodgingImagesRepository.create({
+    const lodgingImages = this.lodgingImagesRepository.createLodgingImages({
       lodgingId,
       downloadUrls: urls,
     });
+
     await this.lodgingImagesRepository.save(lodgingImages);
     return lodgingImages;
   }
