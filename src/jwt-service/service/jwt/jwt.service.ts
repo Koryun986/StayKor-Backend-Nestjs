@@ -40,6 +40,7 @@ export class JwtTokenService {
       { payload },
       {
         secret: this.configService.get("jwt.secret"),
+        expiresIn: this.configService.get<string>("jwt.expiration"),
       },
     );
   }
