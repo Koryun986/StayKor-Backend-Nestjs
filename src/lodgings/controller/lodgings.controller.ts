@@ -5,7 +5,6 @@ import {
   Req,
   UploadedFiles,
   UseInterceptors,
-  UsePipes,
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { UserInterceptor } from "src/interceptors/auth/user.interceptor";
@@ -25,10 +24,12 @@ export class LodgingsController {
   @UseInterceptors(FilesInterceptor("files"))
   @UseInterceptors(UserInterceptor)
   async createLodging(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles()
+    files: Array<Express.Multer.File>,
     @Body(new ZodValidationPipe(createLodgingSchema))
     lodgingDto: CreateLodgingDto,
-    @Req() request: Request,
+    @Req()
+    request: Request,
   ) {
     const user: User = (request as any).user;
     const data = await this.lodgingsService.createLodging(

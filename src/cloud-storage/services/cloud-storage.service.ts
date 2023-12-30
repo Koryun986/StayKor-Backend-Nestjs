@@ -12,6 +12,7 @@ import {
 @Injectable()
 export class CloudStorageService {
   private readonly storage: FirebaseStorage;
+  private readonly LODGING_IMAGES_CORE_FOLDER: string;
 
   constructor(private configService: ConfigService) {
     const config = {
@@ -26,6 +27,10 @@ export class CloudStorageService {
       measurementId: configService.get<string>("firebase.measurementId"),
     };
 
+    this.LODGING_IMAGES_CORE_FOLDER = configService.get<string>(
+      "firebase.storageLodgingFolder",
+    );
+
     initializeApp(config);
     this.storage = getStorage();
   }
@@ -36,29 +41,34 @@ export class CloudStorageService {
     lodgingId: number,
   ): Promise<string[]> {
     try {
-      const coreFolderName = this.configService.get<string>(
-        "firebase.storageLodgingFolder",
-      );
-      const folderName = `${coreFolderName}/user_${userId}/lodging_${lodgingId}`;
-      const downloadUrls: string[] = [];
-
-      await Promise.all(
-        files.map(async ({ buffer, originalname, mimetype }) => {
-          const filePath = `${folderName}/${Date.now()}_${originalname}`;
-          const storageRef = ref(this.storage, filePath);
-          const snapshot = await uploadBytesResumable(storageRef, buffer, {
-            contentType: mimetype,
-          });
-
-          const downloadUrl = await getDownloadURL(snapshot.ref);
-
-          downloadUrls.push(downloadUrl);
-        }),
-      );
-
+      const folderName = `${this.LODGING_IMAGES_CORE_FOLDER}/user_${userId}/lodging_${lodgingId}`;
+      const downloadUrls = await this.uploadFilesToBucket(files, folderName);
       return downloadUrls;
     } catch (e) {
       throw new Error("Can't upload files to Firebase Cloud Storage");
     }
+  }
+
+  private async uploadFilesToBucket(
+    files: Array<Express.Multer.File>,
+    bucketName: string,
+  ) {
+    const downloadUrls: string[] = [];
+
+    await Promise.all(
+      files.map(async ({ buffer, originalname, mimetype }) => {
+        const filePath = `${bucketName}/${Date.now()}_${originalname}`;
+        const storageRef = ref(this.storage, filePath);
+        const snapshot = await uploadBytesResumable(storageRef, buffer, {
+          contentType: mimetype,
+        });
+
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+
+        downloadUrls.push(downloadUrl);
+      }),
+    );
+
+    return downloadUrls;
   }
 }

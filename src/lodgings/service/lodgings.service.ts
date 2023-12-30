@@ -3,11 +3,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CloudStorageService } from "src/cloud-storage/services/cloud-storage.service";
 import { LodgingImagesRepository } from "src/repositories/lodging/lodging-images.repository";
 import { Address } from "src/typeorm/entities/address.entity";
+import { LodgingImages } from "src/typeorm/entities/lodging-images.entity";
 import { Lodging } from "src/typeorm/entities/lodging.entity";
 import { Repository } from "typeorm";
 import { AddressDto } from "../dto/address.dto";
 import { CreateLodgingDto } from "../dto/create-lodging.dto";
-import { LodgingImages } from "src/typeorm/entities/lodging-images.entity";
 
 @Injectable()
 export class LodgingsService {
@@ -25,13 +25,16 @@ export class LodgingsService {
     userId: number,
   ) {
     try {
-      const lodging: Lodging = await this.saveLodging(lodgingDto, userId);
+      const lodging: Lodging = await this.createAndSaveLodging(
+        lodgingDto,
+        userId,
+      );
       const downloadUrls = await this.cloudStorageService.uploadFile(
         images,
         userId,
         lodging.id,
       );
-      await this.storeDownloadUrls(downloadUrls, lodging.id);
+      await this.saveDownloadUrls(downloadUrls, lodging.id);
       return {
         ...lodging,
         downloadUrls: downloadUrls,
@@ -41,7 +44,7 @@ export class LodgingsService {
     }
   }
 
-  async saveLodging(
+  async createAndSaveLodging(
     lodgingDto: CreateLodgingDto,
     userId: number,
   ): Promise<Lodging> {
@@ -67,7 +70,7 @@ export class LodgingsService {
     return address.id;
   }
 
-  async storeDownloadUrls(urls: string[], lodgingId: number) {
+  async saveDownloadUrls(urls: string[], lodgingId: number) {
     const lodgingImages = this.lodgingImagesRepository.createLodgingImages({
       lodgingId,
       downloadUrls: urls,
