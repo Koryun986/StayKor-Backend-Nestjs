@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -65,13 +69,17 @@ export class JwtTokenService {
   }
 
   async validateAccessToken(token: string): Promise<User> {
-    const data: JwtVerificationResult = await this.jwtService.verifyAsync(
-      token,
-      {
-        secret: this.configService.get("jwt.secret"),
-      },
-    );
-    return data.payload;
+    try {
+      const data: JwtVerificationResult = await this.jwtService.verifyAsync(
+        token,
+        {
+          secret: this.configService.get("jwt.secret"),
+        },
+      );
+      return data.payload;
+    } catch (err) {
+      throw new UnauthorizedException("JWT is not valid");
+    }
   }
 
   async isTokensBelongsToOneUser(
