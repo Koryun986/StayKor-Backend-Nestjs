@@ -3,27 +3,34 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+import { InjectEntityManager, InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { User } from "../../typeorm/entities/user.entity";
-import { Repository } from "typeorm";
+import { DataSource, EntityManager, Repository } from "typeorm";
 import { CreateUserDto } from "src/auth/dto/create-user.dto";
 import { JwtTokenService } from "src/jwt-service/service/jwt/jwt.service";
 import { JwtTokens } from "src/jwt-service/types/jwt-token.type";
 import { UserDto } from "../dto/user.dto";
+import { Token } from "src/typeorm/entities/token.entity";
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Token) private tokenRepository: Repository<Token>,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
+    private readonly dataSource: DataSource,
     private readonly jwtTokenServcie: JwtTokenService,
   ) {}
 
   async registrateUser(userDto: CreateUserDto): Promise<User & JwtTokens> {
     await this.validateUserIfExist(userDto);
+
     const user = await this.createUser(userDto);
     const { accessToken, refreshToken } =
-      await this.jwtTokenServcie.generateToken(user);
+      await this.jwtTokenServcie.generateTokens(user);
+    await this.saveUserAndRefreshToken(user, refreshToken);
     return {
       ...user,
       accessToken,
@@ -88,6 +95,8 @@ export class AuthService {
       password: hashedPassword,
     });
     await this.userRepository.save(user);
+    console.log("userId", user.id);
+
     return user;
   }
 
@@ -103,5 +112,23 @@ export class AuthService {
     bcrypt.compare(hashedComparedPassword, hashedPassword, (err) => {
       if (err) throw new BadRequestException("Email or Password is incorrect");
     });
+  }
+
+  async saveUserAndRefreshToken(user: User, refreshToken: Token) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const savedUser = await queryRunner.manager.save(user);
+      refreshToken.userId = savedUser.id;
+      await queryRunner.manager.save(refreshToken);
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      throw e;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

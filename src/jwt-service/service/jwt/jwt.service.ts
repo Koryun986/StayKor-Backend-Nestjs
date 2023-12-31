@@ -23,7 +23,7 @@ export class JwtTokenService {
     private readonly configService: ConfigService,
   ) {}
 
-  async generateToken(payload: User): Promise<JwtTokens> {
+  async generateTokens(payload: User): Promise<JwtTokens> {
     console.log(payload);
 
     const accessToken = await this.gnenerateAccessToken(payload);
@@ -104,7 +104,6 @@ export class JwtTokenService {
       expiration: this.createExpiration(),
       user: payload,
     });
-    await this.tokenRepository.save(token);
     return token;
   }
 
