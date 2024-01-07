@@ -9,6 +9,9 @@ import { TypeOrmConfigService } from "./typeorm/typeorm-config.service";
 import { JwtServiceModule } from "./jwt-service/jwt-service.module";
 import { LodgingsModule } from "./lodgings/lodgings.module";
 import { CloudStorageModule } from "./cloud-storage/cloud-storage.module";
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { GraphQLConfigService } from "./graphql/graphql.config";
 
 @Module({
   imports: [
