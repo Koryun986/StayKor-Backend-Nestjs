@@ -24,10 +24,10 @@ import { GraphQLConfigService } from "./graphql/graphql.config";
       inject: [ConfigService],
       useClass: TypeOrmConfigService,
     }),
-    GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      useClass: GraphQLConfigService,
-    }),
+    // GraphQLModule.forRootAsync<ApolloDriverConfig>({
+    //   driver: ApolloDriver,
+    //   useClass: GraphQLConfigService,
+    // }),
     AuthModule,
     JwtServiceModule,
     LodgingsModule,

@@ -29,13 +29,7 @@ export class Lodging {
   description: string;
 
   @Field(() => Address)
-  @OneToOne(() => Address)
   address: Address;
-
-  @Column({
-    type: "bigint",
-  })
-  addressId: number;
 
   @ManyToOne(() => User)
   user: User;

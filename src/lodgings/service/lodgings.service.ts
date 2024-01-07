@@ -30,15 +30,11 @@ export class LodgingsService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const address = this.createAddress(lodgingDto.address);
-      const savedAddress = await queryRunner.manager.save(address);
-
-      const lodging: Lodging = this.createLodgingEntity(
-        lodgingDto,
-        userId,
-        savedAddress.id,
-      );
+      const lodging: Lodging = this.createLodgingEntity(lodgingDto, userId);
       const savedLodging = await queryRunner.manager.save(lodging);
+      const address = this.createAddress(lodgingDto.address, savedLodging.id);
+      await queryRunner.manager.save(address);
+
       const downloadUrls = await this.cloudStorageService.uploadFile(
         images,
         userId,
@@ -61,26 +57,22 @@ export class LodgingsService {
     }
   }
 
-  createLodgingEntity(
-    lodgingDto: CreateLodgingDto,
-    userId: number,
-    addressId: number,
-  ): Lodging {
+  createLodgingEntity(lodgingDto: CreateLodgingDto, userId: number): Lodging {
     const lodging = this.lodgingRepository.create({
       description: lodgingDto.description,
       price: lodgingDto.price,
-      addressId,
       userId,
     });
 
     return lodging;
   }
 
-  createAddress(addressDto: AddressDto) {
+  createAddress(addressDto: AddressDto, lodgingId: number) {
     const address: Address = this.addressRepository.create({
       city: addressDto.city,
       country: addressDto.country,
       address: addressDto.address,
+      lodgingId,
     });
 
     return address;
